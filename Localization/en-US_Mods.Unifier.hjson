@@ -1,0 +1,56 @@
+Items: {
+	ViscountFur: {
+		Tooltip: ""
+		DisplayName: Viscount Fur
+	}
+
+	PharaohBrick: {
+		Tooltip: ""
+		DisplayName: Pharaoh's Brick
+	}
+
+	MutantGlowingMushroom: {
+		Tooltip: ""
+		DisplayName: Mutant Glowing Mushroom
+	}
+
+	JellyfishGel: {
+		Tooltip: ""
+		DisplayName: Jellyfish Gel
+	}
+
+	HardenedPlanks: {
+		Tooltip: ""
+		DisplayName: Hardened Planks
+	}
+
+	GraniteStormCore: {
+		Tooltip: ""
+		DisplayName: Granite Storm Core
+	}
+
+	GildedGel: {
+		Tooltip: ""
+		DisplayName: Gilded Gel
+	}
+
+	DeerclopsFur: {
+		Tooltip: ""
+		DisplayName: Deerclops Fur
+	}
+
+	CthulhuTeeth: {
+		Tooltip: ""
+		DisplayName: Cthulhu Teeth
+	}
+
+	ChampionFragment: {
+		Tooltip: ""
+		DisplayName: Champion Fragment
+	}
+
+	AlienTechScrap: {
+		Tooltip: ""
+		DisplayName: Alien Tech Scrap
+	}
+}

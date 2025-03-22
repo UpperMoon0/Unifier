@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!-- Import tModLoader mod properties -->
+	<Import Project="..\tModLoader.targets" />
+
+	<!-- General -->
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<AssemblyName>Unifier</AssemblyName>
+		<DisplayName>Unifier</DisplayName>
+		<Author>NsTut</Author>
+		<Version>0.1</Version>
+		<Description>A mod that unifies various features.</Description>
+		<NoWarn>CS0436</NoWarn>
+	</PropertyGroup>
+
+	<!-- References -->
+	<ItemGroup>
+		<PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
+		<ModReference Include="ThoriumMod" />
+		<ModReference Include="FargowiltasSouls" />
+		<ModReference Include="CalamityMod" />
+		
+		<!-- Optional: Direct DLL references if needed -->
+		<Reference Include="FargowiltasSouls">
+			<HintPath>C:\Users\vongu\OneDrive\Documents\My Games\Terraria\tModLoader\ModSources\ModAssemblies\FargowiltasSouls_v1.7.1.5.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ThoriumMod">
+			<HintPath>C:\Users\vongu\OneDrive\Documents\My Games\Terraria\tModLoader\ModSources\ModAssemblies\ThoriumMod.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="CalamityMod">
+			<HintPath>C:\Users\vongu\OneDrive\Documents\My Games\Terraria\tModLoader\ModSources\ModAssemblies\CalamityMod_v2.0.4.6.dll</HintPath>
+			<Private>False</Private>
+	</ItemGroup>
+
+</Project>

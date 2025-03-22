@@ -1,0 +1,7 @@
+Unifier adds rare resources that drop from various bosses in vanilla Terraria and Thorium Mod.
+The mod also adjusts some Thorium shields to be better balanced and more useful.
+
+Features:
+- 10 new crafting materials dropped by specific bosses
+- Thorium shield rebalancing
+- More content coming soon!
