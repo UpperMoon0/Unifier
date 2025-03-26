@@ -18,7 +18,7 @@ namespace Unifier.Recipes
 
         private void AddMaterialRecipes()
         {
-            Recipe recipe = Recipe.Create(ItemID.PharaohBrick, 8);
+            Recipe recipe = Recipe.Create(ModContent.ItemType<PharaohBrick>(), 8);
             recipe.AddIngredient(ModContent.ItemType<PharaohBrick>(), 1);
             recipe.AddIngredient(ItemID.Sandstone, 20);
             recipe.AddIngredient(ItemID.Sapphire, 2);

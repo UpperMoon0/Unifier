@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.ModLoader;
+using Unifier.Models;
+
 namespace Unifier.Builders
 {
     public class ArmorConfigBuilder
@@ -25,7 +31,7 @@ namespace Unifier.Builders
         
         public ArmorConfigBuilder WithHelmetTooltips(params string[] tooltips)
         {
-            _config.HelmetTooltips = new List<string>(tooltips);
+            _config.HelmetTooltips = [.. tooltips];
             return this;
         }
         

@@ -53,4 +53,9 @@ Items: {
 		Tooltip: ""
 		DisplayName: Alien Tech Scrap
 	}
+
+	StatigelBar: {
+		DisplayName: Statigel Bar
+		Tooltip: ""
+	}
 }
