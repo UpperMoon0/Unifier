@@ -4,109 +4,201 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.DataStructures;
 using System.Collections.Generic;
+using System;
+using Unifier.Models;
+using Unifier.Builders;
 
 namespace Unifier.Items.GlobalItems
 {
-    public class ArmorChanges : GlobalItem
+    public abstract class ArmorChanges : GlobalItem
     {
         public override bool InstancePerEntity => true;
-
-        // Check for individual Wood armor pieces
-        private bool IsWearingWoodHelmet(Player player) => player.armor[0].type == ItemID.WoodHelmet;
-        private bool IsWearingWoodBreastplate(Player player) => player.armor[1].type == ItemID.WoodBreastplate;
-        private bool IsWearingWoodGreaves(Player player) => player.armor[2].type == ItemID.WoodGreaves;
-
-        // Check if wearing full wood armor set
-        private bool IsWearingFullWoodArmor(Player player) => 
-            IsWearingWoodHelmet(player) && IsWearingWoodBreastplate(player) && IsWearingWoodGreaves(player);
-
-        // Apply the set bonus for wood armor
+        
+        // Core armor configuration
+        protected ArmorConfig Config { get; private set; }
+        
+        // Constructor that sets up the armor configuration
+        public ArmorChanges()
+        {
+            Config = SetupArmorConfig(new ArmorConfigBuilder()).Build();
+        }
+        
+        // Abstract method for setting up the armor configuration
+        protected abstract ArmorConfigBuilder SetupArmorConfig(ArmorConfigBuilder builder);
+        
+        // Helper methods for armor set detection
+        protected bool IsWearingHelmet(Player player) => player.armor[0].type != ItemID.None && Config.IsHelmet(player.armor[0].type);
+        protected bool IsWearingChestplate(Player player) => player.armor[1].type != ItemID.None && Config.IsChestplate(player.armor[1].type);
+        protected bool IsWearingLeggings(Player player) => player.armor[2].type != ItemID.None && Config.IsLeggings(player.armor[2].type);
+        protected bool IsWearingFullSet(Player player) => IsWearingHelmet(player) && IsWearingChestplate(player) && IsWearingLeggings(player);
+        
+        // Standard implementations of GlobalItem overrides
         public override void UpdateEquip(Item item, Player player)
         {
-            // Wood Greaves provide +10% movement speed
-            if (item.type == ItemID.WoodGreaves)
+            if (!Config.IsArmorPiece(item.type)) return;
+            
+            if (Config.IsHelmet(item.type))
             {
-                player.moveSpeed += 0.1f;
+                Config.ApplyHelmetEffects?.Invoke(player);
+            }
+            else if (Config.IsChestplate(item.type))
+            {
+                Config.ApplyChestplateEffects?.Invoke(player);
+            }
+            else if (Config.IsLeggings(item.type))
+            {
+                Config.ApplyLeggingsEffects?.Invoke(player);
             }
         }
-
-        // Apply bonus chance not to consume ammo (part of full set bonus)
+        
+        // Override the correct GlobalItem method signature
+        public override void UpdateArmorSet(Player player, string set)
+        {
+            if (set == GetArmorSetName() && IsWearingFullSet(player) && Config.ApplySetEffects != null)
+            {
+                Config.ApplySetEffects(player);
+            }
+        }
+        
+        // Return the armor set name to match in IsArmorSet
+        protected virtual string GetArmorSetName() => "CustomArmorSet";
+        
+        // Override IsArmorSet to identify our armor set
+        public override string IsArmorSet(Item head, Item body, Item legs)
+        {
+            bool isHelmet = Config.IsHelmet(head.type);
+            bool isChestplate = Config.IsChestplate(body.type);
+            bool isLeggings = Config.IsLeggings(legs.type);
+            
+            if (isHelmet && isChestplate && isLeggings)
+                return GetArmorSetName();
+                
+            return "";
+        }
+        
         public override bool CanConsumeAmmo(Item ammo, Item weapon, Player player)
         {
-            // We keep the ammo conservation bonus as a full set bonus
-            if (IsWearingFullWoodArmor(player))
+            if (IsWearingFullSet(player) && Config.AmmoConservationChance > 0f)
             {
-                // 15% chance not to consume ammo
-                return Main.rand.NextFloat() >= 0.15f;
+                if (Main.rand.NextFloat() < Config.AmmoConservationChance)
+                {
+                    return false;
+                }
             }
             return base.CanConsumeAmmo(ammo, weapon, player);
         }
-
-        // Update for individual armor piece effects
+        
         public override void ModifyHitNPC(Item item, Player player, NPC target, ref NPC.HitModifiers modifiers)
         {
-            if (item.DamageType == DamageClass.Ranged)
+            if (!IsAnyArmorPieceEquipped(player)) return;
+            
+            ArmorPiece piece = GetEquippedPieces(player);
+            
+            // Apply damage type specific effects
+            if (Config.DamageTypeEffects.TryGetValue(item.DamageType, out var effects))
             {
-                // Wood Breastplate provides +10% ranged damage
-                if (IsWearingWoodBreastplate(player))
+                if (effects.DamageMultiplier > 0f && (piece & effects.RequiredPieces) == effects.RequiredPieces)
                 {
-                    modifiers.SourceDamage *= 1.1f;
+                    modifiers.SourceDamage *= 1f + effects.DamageMultiplier;
                 }
                 
-                // Full set provides +15% crit strike damage
-                if (IsWearingFullWoodArmor(player))
+                if (effects.CritDamageBonus > 0f && (piece & ArmorPiece.FullSet) == ArmorPiece.FullSet)
                 {
                     var currentCritDamage = modifiers.CritDamage;
-                    float baseValue = currentCritDamage.Base;
-                    float additive = currentCritDamage.Additive + 0.15f;  // Add 15% to current additive value
-                    modifiers.CritDamage = new StatModifier(baseValue, additive);
+                    modifiers.CritDamage = new StatModifier(currentCritDamage.Base, currentCritDamage.Additive + effects.CritDamageBonus);
                 }
             }
         }
-
-        // Also apply the bonus to projectiles (for bows, guns, etc)
+        
         public override void ModifyShootStats(Item item, Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
-            if (item.DamageType == DamageClass.Ranged)
+            if (!IsAnyArmorPieceEquipped(player)) return;
+            
+            ArmorPiece piece = GetEquippedPieces(player);
+            
+            if (Config.DamageTypeEffects.TryGetValue(item.DamageType, out var effects))
             {
-                // Wood Breastplate provides +10% ranged damage
-                if (IsWearingWoodBreastplate(player))
+                if (effects.DamageMultiplier > 0f && (piece & effects.RequiredPieces) != 0)
                 {
-                    damage = (int)(damage * 1.1f);
+                    damage = (int)(damage * (1f + effects.DamageMultiplier));
+                }
+                
+                if (effects.KnockbackMultiplier > 0f && (piece & effects.RequiredPieces) != 0)
+                {
+                    knockback *= 1f + effects.KnockbackMultiplier;
                 }
             }
         }
-
-        // Add critical chance bonus for Wood Helmet
+        
         public override void ModifyWeaponCrit(Item item, Player player, ref float crit)
         {
-            if (item.DamageType == DamageClass.Ranged && IsWearingWoodHelmet(player))
+            if (!IsAnyArmorPieceEquipped(player)) return;
+            
+            ArmorPiece piece = GetEquippedPieces(player);
+            
+            if (Config.DamageTypeEffects.TryGetValue(item.DamageType, out var effects))
             {
-                crit += 5f; // +5% ranged critical chance
+                if (effects.CritChanceBonus > 0f && (piece & effects.RequiredPieces) != 0)
+                {
+                    crit += effects.CritChanceBonus;
+                }
             }
         }
-
+        
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
-            // Individual armor effects
-            if (item.type == ItemID.WoodHelmet)
+            if (!Config.IsArmorPiece(item.type)) return;
+            
+            // Get tooltips for this piece
+            if (Config.IsHelmet(item.type))
             {
-                tooltips.Add(new TooltipLine(Mod, "PrefixAccCritChange", "+5% ranged critical strike chance"));
+                AddTooltipsForPiece(tooltips, Config.HelmetTooltips);
             }
-            else if (item.type == ItemID.WoodBreastplate)
+            else if (Config.IsChestplate(item.type))
             {
-                tooltips.Add(new TooltipLine(Mod, "PrefixAccDamage", "+10% ranged damage"));
+                AddTooltipsForPiece(tooltips, Config.ChestplateTooltips);
             }
-            else if (item.type == ItemID.WoodGreaves)
+            else if (Config.IsLeggings(item.type))
             {
-                tooltips.Add(new TooltipLine(Mod, "PrefixAccMoveSpeed", "+10% movement speed"));
+                AddTooltipsForPiece(tooltips, Config.LeggingsTooltips);
             }
             
-            // Set bonus tooltip for all pieces
-            if (item.type == ItemID.WoodHelmet || item.type == ItemID.WoodBreastplate || item.type == ItemID.WoodGreaves)
+            // Add set bonus tooltip if appropriate
+            if (Config.SetBonusDescription != null && !string.IsNullOrEmpty(Config.SetBonusDescription))
             {
-                tooltips.Add(new TooltipLine(Mod, "SetBonus", "Set Bonus: +15% critical strike damage and 15% chance not to consume ammo"));
+                var setBonusLine = new TooltipLine(Mod, "SetBonus", "Set Bonus: " + Config.SetBonusDescription);
+                setBonusLine.IsModifier = true;
+                tooltips.Add(setBonusLine);
             }
+        }
+        
+        private void AddTooltipsForPiece(List<TooltipLine> tooltips, List<string> pieceTooltips)
+        {
+            if (pieceTooltips == null) return;
+            
+            foreach (var tip in pieceTooltips)
+            {
+                tooltips.Add(new TooltipLine(Mod, $"ArmorEffect{Guid.NewGuid().ToString().Substring(0, 8)}", tip));
+            }
+        }
+        
+        private bool IsAnyArmorPieceEquipped(Player player)
+        {
+            return IsWearingHelmet(player) || IsWearingChestplate(player) || IsWearingLeggings(player);
+        }
+        
+        private ArmorPiece GetEquippedPieces(Player player)
+        {
+            ArmorPiece piece = ArmorPiece.None;
+            
+            if (IsWearingHelmet(player))
+                piece |= ArmorPiece.Helmet;
+            if (IsWearingChestplate(player))
+                piece |= ArmorPiece.Chestplate;
+            if (IsWearingLeggings(player))
+                piece |= ArmorPiece.Leggings;
+                
+            return piece;
         }
     }
 }

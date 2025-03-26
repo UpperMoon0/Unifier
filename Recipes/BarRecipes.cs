@@ -1,3 +1,5 @@
+using CalamityMod.Items.Materials;
+using CalamityMod.Tiles.Furniture.CraftingStations;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -27,10 +29,10 @@ namespace Unifier.Recipes
                 }
             }
 
-            AddShieldRecipes();
+            AddBarRecipes();
         }
 
-        private void AddShieldRecipes()
+        private void AddBarRecipes()
         {
             Recipe recipe = Recipe.Create(ItemID.DemoniteBar, 8);
             recipe.AddIngredient(ItemID.DemoniteOre, 24);
@@ -62,6 +64,14 @@ namespace Unifier.Recipes
             recipe.AddIngredient(ItemID.Obsidian, 8);
             recipe.AddIngredient(ModContent.ItemType<GraniteStormCore>(), 1);
             recipe.AddTile(TileID.Furnaces);
+            recipe.Register();
+
+            recipe = Recipe.Create(ModContent.ItemType<StatigelBar>(), 8);
+            recipe.AddIngredient(ItemID.HellstoneBar, 8);
+            recipe.AddIngredient(ModContent.ItemType<PurifiedGel>(), 2);
+            recipe.AddIngredient(ModContent.ItemType<GildedGel>(), 2);
+            recipe.AddIngredient(ModContent.ItemType<JellyfishGel>(), 1);
+            recipe.AddTile(ModContent.TileType<StaticRefiner>());
             recipe.Register();
         }
     }
