@@ -2,6 +2,8 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using ThoriumMod.Items.BasicAccessories;
+using ThoriumMod.Items.Darksteel;
+using ThoriumMod.Items.Depths;
 using ThoriumMod.Items.Thorium;
 using Unifier.Items;
 using Unifier.RecipeGroups;
@@ -25,7 +27,9 @@ namespace Unifier.Recipes
                     recipe.createItem.type == ModContent.ItemType<TungstenBulwark>() ||
                     recipe.createItem.type == ModContent.ItemType<GoldAegis>() ||
                     recipe.createItem.type == ModContent.ItemType<PlatinumAegis>() ||
-                    recipe.createItem.type == ModContent.ItemType<ThoriumShield>())
+                    recipe.createItem.type == ModContent.ItemType<ThoriumShield>() ||
+                    recipe.createItem.type == ItemID.ObsidianShield ||
+                    recipe.createItem.type == ItemID.AnkhShield) 
                 {
                     recipe.DisableRecipe();
                 }
@@ -91,8 +95,26 @@ namespace Unifier.Recipes
             recipe = Recipe.Create(ModContent.ItemType<ThoriumShield>());
             recipe.AddRecipeGroup(ShieldRecipeGroups.GetGroupNameByTier(4)); // Use any Tier 4 shield
             recipe.AddIngredient(ModContent.ItemType<ThoriumBar>(), 10);
+            recipe.AddIngredient(ModContent.ItemType<AquaiteBar>(), 6);
             recipe.AddIngredient(ModContent.ItemType<ChampionFragment>(), 3);
             recipe.AddTile(ModContent.TileType<ThoriumAnvil>());
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.ObsidianShield);
+            recipe.AddIngredient(ItemID.CobaltShield, 1);
+            recipe.AddIngredient(ModContent.ItemType<ThoriumShield>(), 1);
+            recipe.AddIngredient(ItemID.ObsidianSkull, 1);
+            recipe.AddIngredient(ModContent.ItemType<aDarksteelAlloy>(), 5);
+            recipe.AddIngredient(ModContent.ItemType<AlienTechScrap>(), 3);
+            recipe.AddTile(ModContent.TileType<ThoriumAnvil>());
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.AnkhShield);
+            recipe.AddIngredient(ItemID.AnkhCharm, 1);
+            recipe.AddIngredient(ItemID.ObsidianShield, 1);
+            recipe.AddIngredient(ModContent.ItemType<StatigelBar>(), 8);
+            recipe.AddIngredient(ItemID.SoulofNight, 4);
+            recipe.AddTile(TileID.MythrilAnvil);
             recipe.Register();
         }
     }

@@ -28,6 +28,12 @@ namespace Unifier.NPCs
                 npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<PharaohBrick>(), 1, 5, 8));
             }
 
+            // Banished Baron - Baron Fin
+            if (npc.type == fargoMod.Find<ModNPC>("BanishedBaron").Type)
+            {
+                npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<BaronFin>(), 1, 5, 8));
+            }
+
             // Thorium Mod Bosses
             // Star Scouter - Alien Tech Scrap
             if (npc.type == thoriumMod.Find<ModNPC>("StarScouter").Type)
@@ -59,6 +65,18 @@ namespace Unifier.NPCs
                 npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ViscountFur>(), 1, 5, 8));
             }
 
+            // Borean Strider - Borean Sack
+            if (npc.type == thoriumMod.Find<ModNPC>("BoreanStrider").Type)
+            {
+                npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<BoreanSack>(), 1, 5, 8));
+            }
+
+            // Fallen Beholder - Coznix Eye
+            if (npc.type == thoriumMod.Find<ModNPC>("FallenBeholder").Type)
+            {
+                npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<CoznixEye>(), 1, 5, 8));
+            }
+
             // Calamity Mod Bosses
             // Crabulon - Mutant Glowing Mushroom
             if (npc.type == calamityMod.Find<ModNPC>("Crabulon").Type)
@@ -77,6 +95,12 @@ namespace Unifier.NPCs
             if (npc.type == NPCID.KingSlime)
             {
                 npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<GildedGel>(), 1, 5, 8));
+            }
+
+            // Eye of Cthulhu - Cthulhu Teeth
+            if (npc.type == NPCID.EyeofCthulhu)
+            {
+                npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<CthulhuTeeth>(), 1, 5, 8));
             }
         }
     }
