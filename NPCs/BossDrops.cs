@@ -1,7 +1,11 @@
+using FargowiltasSouls.Content.Bosses.BanishedBaron;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
+using ThoriumMod.Biomes.Depths;
+using ThoriumMod.NPCs.BossFallenBeholder;
+using ThoriumMod.NPCs.BossForgottenOne;
 using Unifier.Items;
 
 namespace Unifier.NPCs
@@ -32,6 +36,12 @@ namespace Unifier.NPCs
             if (npc.type == fargoMod.Find<ModNPC>("BanishedBaron").Type)
             {
                 npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<BaronFin>(), 1, 5, 8));
+            }
+
+            // Lifelight - Shiny Plate
+            if (npc.type == fargoMod.Find<ModNPC>(typeof(FargowiltasSouls.Content.Bosses.Lifelight.LifeChallenger).Name).Type)
+            {
+                npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ShinyPlate>(), 1, 5, 8));
             }
 
             // Thorium Mod Bosses
@@ -72,9 +82,15 @@ namespace Unifier.NPCs
             }
 
             // Fallen Beholder - Coznix Eye
-            if (npc.type == thoriumMod.Find<ModNPC>("FallenBeholder").Type)
+            if (npc.type == thoriumMod.Find<ModNPC>(typeof(FallenBeholder2).Name).Type)
             {
                 npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<CoznixEye>(), 1, 5, 8));
+            }
+
+            // Forgotten One - Ancient Shell
+            if (npc.type == thoriumMod.Find<ModNPC>("ForgottenOne").Type)
+            {
+                npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<AncientShell>(), 1, 5, 8));
             }
 
             // Calamity Mod Bosses
@@ -101,6 +117,12 @@ namespace Unifier.NPCs
             if (npc.type == NPCID.EyeofCthulhu)
             {
                 npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<CthulhuTeeth>(), 1, 5, 8));
+            }
+
+            // Duke Fishron - Duke Tail
+            if (npc.type == NPCID.DukeFishron)
+            {
+                npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<DukeTail>(), 1, 5, 8));
             }
         }
     }

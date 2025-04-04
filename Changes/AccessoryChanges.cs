@@ -1,9 +1,11 @@
+using CalamityMod.Items.Accessories;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using ThoriumMod.Items.BasicAccessories;
+using ThoriumMod.Items.Terrarium;
 using ThoriumMod.Items.Thorium;
 using ThoriumMod.Utilities;
 
@@ -19,21 +21,19 @@ namespace Unifier.Changes
         {
             shieldStats = new Dictionary<int, (int Defense, int ShieldValue)>();
             
-            // Only populate after ThoriumMod is confirmed loaded
-            if (ModLoader.TryGetMod("ThoriumMod", out Mod _))
-            {
-                shieldStats[ModContent.ItemType<CopperBuckler>()] = (2, 8);
-                shieldStats[ModContent.ItemType<TinBuckler>()] = (2, 9);
-                shieldStats[ModContent.ItemType<IronShield>()] = (3, 13);
-                shieldStats[ModContent.ItemType<LeadShield>()] = (3, 14);
-                shieldStats[ModContent.ItemType<SilverBulwark>()] = (4, 17);
-                shieldStats[ModContent.ItemType<TungstenBulwark>()] = (4, 18);
-                shieldStats[ModContent.ItemType<GoldAegis>()] = (5, 22);
-                shieldStats[ModContent.ItemType<PlatinumAegis>()] = (5, 23);
-                shieldStats[ModContent.ItemType<ThoriumShield>()] = (6, 32);
-                shieldStats[ItemID.ObsidianShield] = (8, 40);
-                shieldStats[ItemID.AnkhShield] = (10, 50);
-            }
+            shieldStats[ModContent.ItemType<CopperBuckler>()] = (2, 8);
+            shieldStats[ModContent.ItemType<TinBuckler>()] = (2, 9);
+            shieldStats[ModContent.ItemType<IronShield>()] = (3, 13);
+            shieldStats[ModContent.ItemType<LeadShield>()] = (3, 14);
+            shieldStats[ModContent.ItemType<SilverBulwark>()] = (4, 17);
+            shieldStats[ModContent.ItemType<TungstenBulwark>()] = (4, 18);
+            shieldStats[ModContent.ItemType<GoldAegis>()] = (5, 22);
+            shieldStats[ModContent.ItemType<PlatinumAegis>()] = (5, 23);
+            shieldStats[ModContent.ItemType<ThoriumShield>()] = (6, 32);
+            shieldStats[ItemID.ObsidianShield] = (8, 40);
+            shieldStats[ItemID.AnkhShield] = (10, 50);
+            shieldStats[ModContent.ItemType<AsgardsValor>()] = (14, 65);
+            shieldStats[ModContent.ItemType<TerrariumDefender>()] = (20, 90);
         }
 
         public override void UpdateAccessory(Item item, Player player, bool hideVisual)
@@ -82,6 +82,17 @@ namespace Unifier.Changes
                 player.statDefense += 2;
                 player.GetThoriumPlayer().MetalShieldMax += 50;
             }
+
+            if (item.type == ModContent.ItemType<AsgardsValor>())
+            {
+                player.statDefense += 6;
+                player.GetThoriumPlayer().MetalShieldMax += 65;
+            }
+
+            if (item.type == ModContent.ItemType<TerrariumDefender>())
+            {
+                player.GetThoriumPlayer().MetalShieldMax += 90;
+            }
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
@@ -96,7 +107,6 @@ namespace Unifier.Changes
                 }
                 
                 // Add standard shield tooltips
-                tooltips.Add(new TooltipLine(Mod, "Equipable", "Equipable"));
                 tooltips.Add(new TooltipLine(Mod, "Defense", $"{stats.Defense} defense"));
                 
                 // Add shield value tooltip
@@ -114,6 +124,24 @@ namespace Unifier.Changes
                 {
                     tooltips.Add(new TooltipLine(Mod, "Immunity", "Grants immunity to knockback, the Burning and On Fire! debuffs"));
                     tooltips.Add(new TooltipLine(Mod, "Immunity", "Grants immunity to most debuffs, including the Mighty Wind"));
+                }
+
+                // Add Asgards Valor specific tooltip
+                if (item.type == ModContent.ItemType<AsgardsValor>())
+                {
+                    tooltips.Add(new TooltipLine(Mod, "", "Allow the ability to ram dash"));
+                    tooltips.Add(new TooltipLine(Mod, "", "This dash can slam through enenmies without taking damage"));
+                    tooltips.Add(new TooltipLine(Mod, "Immunity", "Grants immunity to knockback, fire and most debuffs"));
+                }
+
+                // Add Terrarium Defender specific tooltip
+                if (item.type == ModContent.ItemType<TerrariumDefender>())
+                {
+                    tooltips.Add(new TooltipLine(Mod, "", "Maximum life increased by 20"));
+                    tooltips.Add(new TooltipLine(Mod, "", "Prolongs after hit invincibility"));
+                    tooltips.Add(new TooltipLine(Mod, "Immunity", "Grants immunity to knockback, fire and most debuffs"));
+                    tooltips.Add(new TooltipLine(Mod, "", "When above 25% life, absorbs 25% of damage done to nearby players on your team"));
+                    tooltips.Add(new TooltipLine(Mod, "", "When below 25% life, you will rapidly regenerate life and gain increased defense"));
                 }
 
                 tooltips.Add(new TooltipLine(Mod, "Material", "Material"));

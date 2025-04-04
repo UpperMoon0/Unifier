@@ -73,4 +73,19 @@ Items: {
 		Tooltip: ""
 		DisplayName: Baron Fin
 	}
+
+	ShinyPlate: {
+		Tooltip: ""
+		DisplayName: Shiny Plate
+	}
+
+	DukeTail: {
+		Tooltip: ""
+		DisplayName: Duke Tail
+	}
+
+	AncientShell: {
+		Tooltip: ""
+		DisplayName: Ancient Shell
+	}
 }

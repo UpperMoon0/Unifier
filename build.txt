@@ -1,5 +1,5 @@
 displayName = Unifier
 author = NsTut
-version = 0.3
+version = 0.5
 modReferences = ThoriumMod, FargowiltasSouls, CalamityMod
 sortAfter = ThoriumMod, FargowiltasSouls, CalamityMod
